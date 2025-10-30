@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园电动车充电桩预约与共享平台 | 人机交互实验课作业</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4c66e2 0%, #68309e 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .authors {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .author {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .section-title {
+            color: #4c66e2;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4c66e2;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .subsection-title {
+            color: #68309e;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 25px 0 15px;
+            padding-left: 15px;
+            border-left: 5px solid #68309e;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 5px solid #4c66e2;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: #4c66e2;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 8px;
+        }
+        
+        .feature-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list i {
+            color: #4c66e2;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid #4c66e2;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4c66e2;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        .interview-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #68309e;
+        }
+        
+        .interview-header {
+            background: linear-gradient(135deg, #4c66e2 0%, #68309e 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .qa-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .question {
+            color: #4c66e2;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .answer {
+            color: #333;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .chart-title {
+            color: #4c66e2;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin: 0 auto;
+        }
+        
+        .keyword-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .keyword-table th {
+            background: linear-gradient(135deg, #4c66e2 0%, #68309e 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .keyword-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .keyword-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .keyword-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .insight-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4c66e2;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: #4c66e2;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-title i {
+            margin-right: 8px;
+        }
+        
+        .design-recommendation {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #68309e;
+        }
+        
+        .design-recommendation h4 {
+            color: #68309e;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 40px;
+        }
+        
+        .project-link {
+            display: inline-block;
+            background: #4c66e2;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .project-link:hover {
+            background: #3a52c4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 102, 226, 0.3);
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #4c66e2 0%, #68309e 100%);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .gallery-caption {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .bar-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .bar-label {
+            width: 150px;
+            font-weight: 500;
+        }
+        
+        .bar-container {
+            flex: 1;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4c66e2 0%, #68309e 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease-in-out;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 30px 15px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-wrapper {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>校园电动车充电桩预约与共享平台</h1>
+            <p>人机交互实验课作业 - 用户调研与分析报告</p>
+            <div class="authors">
+                <div class="author">姚佳悦 202218130024</div>
+                <div class="author">罗浩铭 202200130083</div>
+                <div class="author">张政航 202200130134</div>
+                <div class="author">徐雪钰 202200130284</div>
+            </div>
+            <a href="https://luailezhihang.github.io/people-machine/" class="project-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> 查看项目网页
+            </a>
+        </header>
+        
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> 项目背景与研究方法</h2>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-bolt"></i> 项目简介</h3>
+                <p>该项目致力于打造一款面向全校师生的"校园电动车充电桩预约与共享平台"。针对目前校园充电设施"有桩无位、有位无电、信息不透明、使用效率低"等核心痛点，平台集成四大功能模块：</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-map-marker-alt"></i> <strong>实时桩位感知与地图导航</strong> - 帮助用户快速找到可用充电桩</li>
+                    <li><i class="fas fa-calendar-check"></i> <strong>15分钟提前预约与信用保位机制</strong> - 避免排队与无效跑动</li>
+                    <li><i class="fas fa-share-alt"></i> <strong>智能共享模式</strong> - 鼓励宿舍区、教学楼等私有插座车主共享闲置资源，平台提供电费结算与保险保障</li>
+                    <li><i class="fas fa-star"></i> <strong>信用分体系与违规惩戒</strong> - 对恶意占桩、拔插头等行为进行扣分与预约限制，营造文明充电环境</li>
+                </ul>
+                <p>通过物联网插座、云端算法和小程序端的无缝协同，该项目期望实现"充电不求人、预约不等待、共享不麻烦"，提升校园充电资源利用率，减少用户平均寻桩时间，为绿色校园出行提供可靠、高效、公平的能源基础设施。</p>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-search"></i> 研究方法</h3>
+                <p>本研究采用访谈与调查问卷相结合的研究方法：</p>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">深度访谈用户</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">13</div>
+                        <div class="stat-label">有效问卷样本</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">研究方法结合</div>
+                    </div>
+                </div>
+                <p><strong>半结构式访谈：</strong>深入访谈4名具有不同背景的电动车用户，深入了解其具体的充电行为、痛点、情绪感受及深层需求。</p>
+                <p><strong>调查问卷：</strong>发放并回收13份有效问卷，获取可量化的数据，以验证访谈发现并了解需求的普遍性。</p>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> 调查问卷数据分析</h2>
+            
+            <h3 class="subsection-title">用户基本信息</h3>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-value">62%</div>
+                    <div class="stat-label">本科生</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">31%</div>
+                    <div class="stat-label">研究生</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">7%</div>
+                    <div class="stat-label">教职工</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">92%</div>
+                    <div class="stat-label">电动自行车用户</div>
+                </div>
+            </div>
+            
+            <h3 class="subsection-title">充电行为与核心痛点</h3>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-charging-station"></i> 充电频率以低频为主，但需求稳定</h4>
+                <div class="chart-container">
+                    <div class="chart-title">充电频率分布</div>
+                    <div class="bar-chart">
+                        <div class="bar-item">
+                            <div class="bar-label">&lt;2次/周</div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: 69%">69%</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">2-4次/周</div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: 31%">31%</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">5-7次/周</div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>近七成（69%）用户每周充电少于2次，其余31%的用户每周充电2-4次。没有高频次（每周5次以上）充电用户。这表明用户充电行为属于中低频，但每次充电都是"刚需"，对可靠性的要求很高。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-clock"></i> 充电时间高度集中，晚高峰矛盾突出</h4>
+                <div class="chart-container">
+                    <div class="chart-title">充电时段分布</div>
+                    <div class="bar-chart">
+                        <div class="bar-item">
+                            <div class="bar-label">21-23点 (晚高峰)</div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: 77%">77%</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">17-19点 (傍晚)</div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: 46%">46%</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">11-13点 (午休)</div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: 38%">38%</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">7-9点 (早晨)</div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: 31%">31%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>充电时段呈现明显的晚高峰聚集现象。超过四分之三（77%）的用户在晚上9-11点充电，这与学生下课回寝后的作息时间高度相关。其次是傍晚（46%）和午休（38%）。这种高度的时段集中性是导致排队、无桩可用的根本原因。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-money-bill-wave"></i> 月均花费低廉，用户对价格敏感</h4>
+                <div class="chart-container">
+                    <div class="chart-title">月均充电花费分布</div>
+                    <div class="chart-wrapper">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>绝大多数用户（92%）每月充电花费低于10元。这提示平台在引入预约费等增值服务时，定价需谨慎，不宜过高。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-running"></i> 信息缺失导致"白跑"现象普遍</h4>
+                <div class="chart-container">
+                    <div class="chart-title">"白跑"经历统计</div>
+                    <div class="chart-wrapper">
+                        <canvas id="wasteTripChart"></canvas>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>高达86%的用户在过去一个月存在"白跑"经历（找不到空桩或遇到坏桩），其中38%的用户白跑多达3-5次。这直接反映了当前信息不透明问题的严重性。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-battery-quarter"></i> 基础设施数量不足，用户满意度低</h4>
+                <div class="chart-container">
+                    <div class="chart-title">充电桩数量满意度 (1-5分)</div>
+                    <div class="chart-wrapper">
+                        <canvas id="satisfactionChart"></canvas>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>用户对现有充电桩数量的满意度偏负面。合计38%的用户给出了不满意（1-2分）的评价，且没有任何用户认为数量充足（5分），证实了充电桩基础设施在数量上存在不足。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-exclamation-triangle"></i> 核心痛点总结：开放题关键词分析</h4>
+                <p>通过对开放题(Q15)的文本分析，我们提取了用户提及的痛苦经历关键词及其频率：</p>
+                <table class="keyword-table">
+                    <thead>
+                        <tr>
+                            <th>痛苦经历</th>
+                            <th>提及次数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>白跑/找不到桩</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>排队</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>被拔插头</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>插座故障/接触不良/无电</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>着急/浪费时间</td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 class="subsection-title">需求与意愿分析</h3>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-mobile-alt"></i> 对"实时空桩+预约"功能需求强烈</h4>
+                <p><strong>Q8.</strong> 如果小程序显示"实时空桩+预约"，你觉得对你帮助大吗？</p>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">非常大</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">15%</div>
+                        <div class="stat-label">较大</div>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>100%的用户认为此功能有帮助，证明了我们核心功能方向的正确性。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-coins"></i> 用户具有中度付费意愿，认可"确定性"价值</h4>
+                <p><strong>Q9.</strong> 你愿意为"预约保留15分钟"预付多少？</p>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">54%</div>
+                        <div class="stat-label">0.5元</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">31%</div>
+                        <div class="stat-label">1元</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">15%</div>
+                        <div class="stat-label">0元</div>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>85%的用户愿意为预约服务付费，为平台引入信用保障机制提供了可能。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-gavel"></i> 对信用惩戒体系支持度极高</h4>
+                <p><strong>Q11.</strong> 你是否支持"拔别人插头扣信用分"规则？</p>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">92%</div>
+                        <div class="stat-label">支持</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">8%</div>
+                        <div class="stat-label">视情况而定</div>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>用户对建立公平、文明的充电环境有强烈共识，为信用体系的实施奠定了坚实的群众基础。</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title"><i class="fas fa-share-alt"></i> 对私桩共享态度谨慎，安全是首要顾虑</h4>
+                <p><strong>Q10.</strong> 对"共享私桩"模式信任度（1-5分）</p>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">46%</div>
+                        <div class="stat-label">1-2分 (不信任)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">31%</div>
+                        <div class="stat-label">3分 (中立)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">23%</div>
+                        <div class="stat-label">4-5分 (信任)</div>
+                    </div>
+                </div>
+                <p><strong>发现：</strong>信任度偏低，表明在推广共享模式前，平台必须优先解决用户对安全和责任划分的顾虑。</p>
+            </div>
+            
+            <div class="insight-box">
+                <h4 class="insight-title"><i class="fas fa-lightbulb"></i> 问卷总结与关键洞察</h4>
+                <p>通过对问卷的深入分析，我们清楚地看到了校园电动车用户们在充电时的真实情况和烦恼。我们主要发现了两个关键点：</p>
+                <p><strong>首先，大家普遍面临着 "桩少难找，信息不通" 的困境。</strong> 这集中体现在：绝大多数人（77%）都集中在晚上9到11点这个高峰时段充电，结果自然是"狼多肉少"；同时，因为无法提前知道哪里有空桩，高达86%的用户都有过"白跑一趟"的糟糕经历，这不仅浪费时间，更让人感到无奈。</p>
+                <p><strong>其次，用户们表现出 "渴望确定、要求公平" 的强烈意愿。</strong> 具体来说，大部分用户（85%）愿意支付少量费用（0.5-1元）来预约车位，这说明大家愿意用一点钱来换取"不白跑"的确定性。更让我们印象深刻的是，几乎所有人（92%）都支持用"扣信用分"的方式来惩罚那些随意拔别人插头的不文明行为，这反映了用户们对一个公平、有秩序的充电环境有着共同的期待。</p>
+                <p>总的来说，用户的充电需求次数不算频繁，但每次都是"刚需"，所以他们最核心的诉求就是：信息要透明，能实时看到空桩；过程要可控，能提前预约。</p>
+                <p><strong>最让我们没想到的是，同学们对于实名制和严格管理的接受度非常高。</strong> 尽管需要绑定校园卡，可能涉及隐私，但77%的用户表示愿意；尽管信用惩戒听起来很严格，但92%的用户表示支持。这强烈地说明，当找桩充电这件事变得足够混乱和令人心烦时，大家宁愿接受一些规则、牺牲一点便利，来换取一个大家都能讲规矩、不用提心吊胆的充电环境。这种为了"秩序"而愿意改变的想法，是我们这次调查一个非常有意思的发现。</p>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-comments"></i> 访谈数据分析</h2>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-project-diagram"></i> 亲和图制作过程</h3>
+                <p>我们通过对4位用户的半结构化访谈，深入挖掘了其充电行为细节、情绪感受和深层需求。亲和图制作过程包括：</p>
+                
+                <div class="image-gallery">
+                    <div class="gallery-item">
+                        <div class="gallery-image">原始数据提取</div>
+                        <div class="gallery-caption">将访谈记录拆解为独立的观点或事实</div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="gallery-image">亲和排序</div>
+                        <div class="gallery-caption">将内容相似、相关的便签移动到一起</div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="gallery-image">创建主题标签</div>
+                        <div class="gallery-caption">为每一个小组创建精准概括的核心思想标签</div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="gallery-image">构建层级结构</div>
+                        <div class="gallery-caption">形成主主题和子主题的层次结构</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-map-signs"></i> 亲和图综合结果</h3>
+                <p>通过对便利贴进行多次迭代、分组和归纳，我们最终形成了结构化的亲和图，包含四个主主题：</p>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-frown"></i> 主主题一：充满挫折与焦虑的充电旅程</h4>
+                    <ul>
+                        <li><strong>低效的寻桩过程</strong> - 高峰期桩位紧张，需要辗转多个地点，寻桩过程平均耗时15-40分钟</li>
+                        <li><strong>糟糕的设备体验</strong> - 常见插座故障，缺乏有效的故障反馈和报修渠道</li>
+                        <li><strong>不安的充电守护</strong> - 普遍担心被拔插头，被迫采取防御性措施</li>
+                    </ul>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-info-circle"></i> 主主题二：对信息透明与决策支持的迫切需求</h4>
+                    <ul>
+                        <li><strong>信息获取渠道匮乏</strong> - 主要依赖现场看，信息极度滞后</li>
+                        <li><strong>对核心功能的高期待</strong> - 迫切需要实时空桩地图、预约功能和充电异常提醒</li>
+                    </ul>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-balance-scale"></i> 主主题三：认可规则与价值交换</h4>
+                    <ul>
+                        <li><strong>愿意为确定性付费</strong> - 多数用户接受0.5-1元的预约费，认可"时间更宝贵"</li>
+                        <li><strong>强烈支持信用惩戒</strong> - 认为破坏公共秩序的行为应受严惩</li>
+                        <li><strong>为换取公平环境而接受实名制</strong> - 愿意绑定校园卡以换取规范、公平的充电环境</li>
+                    </ul>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-share-alt"></i> 主主题四：对共享模式既开放又担忧的矛盾心态</h4>
+                    <ul>
+                        <li><strong>概念上的接受</strong> - 认为共享能增加资源供给，特别是在宿舍区等熟悉环境</li>
+                        <li><strong>安全与责任的深层顾虑</strong> - 担心私人插座的安全隐患和责任划分不清</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="insight-box">
+                <h4 class="insight-title"><i class="fas fa-chart-line"></i> 访谈分析总结</h4>
+                <p>访谈让我们看见了问卷数据背后的具体人影和情感。我们学到了：</p>
+                <p><strong>情绪是核心驱动力：</strong> 用户的"烦躁"、"无奈"和"焦虑"不仅是痛点，更是我们设计需要解决的核心问题。设计的目标是消除这些负面情绪，带来安心和便捷。</p>
+                <p><strong>用户是理性的决策者：</strong> 他们能清晰地权衡时间、金钱和规则。例如，用户愿意为1元预约费买单，是基于其"时间更宝贵"的理性判断。</p>
+                <p><strong>公平感至关重要：</strong> 用户对信用体系的支持，根源在于对"公平充电环境"的渴望。他们痛恨破坏规则的人，并希望系统能更加公正。</p>
+                <p><strong>信任需要被"设计"：</strong> 在共享经济中，用户的信任不是凭空产生的。它需要通过透明的规则、可靠的保障和有力的执行来一步步构建。最让我们惊讶的是，用户对于"被拔插头"现象的无力感，以及他们对于平台作为"规则维护者"的强烈期待，这超出了我们最初的设想。</p>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> 研究发现与设计建议</h2>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-search"></i> 主要研究发现</h3>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-chart-pie"></i> 发现一：高峰期刚需凸显，信息焦虑是主要矛盾</h4>
+                    <p>超过四分之三的用户（77%）在21-23点充电，同时85%的用户表示"实时空桩+预约"对他们"非常大"的帮助。信息不透明导致的"白跑"现象普遍存在（86%的用户经历过）。</p>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-money-bill-wave"></i> 发现二：用户具有中度付费意愿和极强信用共识</h4>
+                    <p>85%的用户愿意为"预约保留15分钟"付费0.5元或1元，显示出对确定性服务的价值认可。同时，92%的用户"支持"对恶意拔插头行为进行扣分惩戒，为信用体系的建立提供了坚实的群众基础。</p>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-tools"></i> 发现三：基础设施严重不足与维护缺位</h4>
+                    <p>用户对现有充电桩数量满意度偏低，38%的用户表示不满意。除"找不到位"外，"桩坏/接触不良"是另一主要痛苦来源，亟需报修和状态反馈功能。</p>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-handshake"></i> 发现四：私桩共享潜力有待开发，但顾虑重重</h4>
+                    <p>虽然多数用户愿意为规范管理而实名制（77%），但对"共享私桩"模式的信任度偏低（46%不信任），主要集中在安全和责任划分上。</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-pencil-ruler"></i> 设计建议</h3>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-map-marked-alt"></i> 1. 实时地图与智能预约（核心功能）</h4>
+                    <ul>
+                        <li><strong>地图可视化：</strong> 首页必须是地图，实时显示桩位状态、电摩/自行车的兼容性</li>
+                        <li><strong>预约机制：</strong> 启用付费预约（建议定价0.5元），提供15分钟保留时间，确保高峰期用户的时间价值</li>
+                    </ul>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-star"></i> 2. 强信用体系建设（规则保障）</h4>
+                    <ul>
+                        <li><strong>信用惩戒：</strong> 对恶意拔插头、预约超时、占位不充电等行为，设立明确的扣分和等级限制，并公开惩戒规则</li>
+                        <li><strong>实名认证：</strong> 绑定校园卡，使用户行为可追溯，保障信用体系的严肃性</li>
+                    </ul>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-bell"></i> 3. 设备反馈与安全提醒（体验优化）</h4>
+                    <ul>
+                        <li><strong>自动提醒：</strong> 增加充电异常（如断电/被拔）和充满电的实时通知功能</li>
+                        <li><strong>报修系统：</strong> 设置明显的故障报修入口，用户可以上传图片和描述，平台需在地图上标记[待维修]状态</li>
+                    </ul>
+                </div>
+                
+                <div class="design-recommendation">
+                    <h4><i class="fas fa-home"></i> 4. 谨慎且安全地推广共享（创新模式）</h4>
+                    <ul>
+                        <li><strong>安全保障：</strong> 私桩共享必须由平台提供保险，并确保设备安全达标（例如使用认证物联网插座）</li>
+                        <li><strong>评价机制：</strong> 建立用户对私桩的评分体系，淘汰低质量共享资源</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>人机交互实验课作业 | 校园电动车充电桩预约与共享平台</p>
+            <p>姚佳悦 202218130024 | 罗浩铭 202200130083 | 张政航 202200130134 | 徐雪钰 202200130284</p>
+            <p>&copy; 2023 | 版权所有</p>
+        </footer>
+    </div>
+
+    <script>
+        // 页面加载完成后初始化图表
+        document.addEventListener('DOMContentLoaded', function() {
+            // 月均充电花费图表
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            new Chart(costCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['<10元', '10-30元', '30-50元', '>50元'],
+                    datasets: [{
+                        data: [92, 8, 0, 0],
+                        backgroundColor: [
+                            '#4c66e2',
+                            '#68309e',
+                            '#a24ba2',
+                            '#d9534f'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // "白跑"经历统计图表
+            const wasteTripCtx = document.getElementById('wasteTripChart').getContext('2d');
+            new Chart(wasteTripCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['0次', '1-2次', '3-5次', '>5次'],
+                    datasets: [{
+                        label: '用户比例',
+                        data: [15, 38, 38, 8],
+                        backgroundColor: '#4c66e2',
+                        borderColor: '#3a52c4',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // 满意度图表
+            const satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
+            new Chart(satisfactionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['1分', '2分', '3分', '4分', '5分'],
+                    datasets: [{
+                        label: '用户比例',
+                        data: [15, 23, 46, 15, 0],
+                        backgroundColor: [
+                            '#d9534f',
+                            '#f0ad4e',
+                            '#5bc0de',
+                            '#5cb85c',
+                            '#68309e'
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // 添加动画效果
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // 为所有卡片添加动画
+            document.querySelectorAll('.card, .stat-card, .design-recommendation').forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
